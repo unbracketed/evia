@@ -10,7 +10,7 @@ from setuptools import setup
 setup(
     name='evia',
     version='0.1',
-    url='http://github.com/unbracketed/evia',
+    url='https://github.com/unbracketed/evia',
     license='BSD',
     author='Brian Luft',
     author_email='brian@unbracketed.com',
@@ -22,7 +22,8 @@ setup(
     platforms='any',
     install_requires=[
         'ws4py',
-        'sqlalchemy'
+        'SQLAlchemy',
+        'redis'
     ],
     classifiers=[
         'Environment :: Web Environment',

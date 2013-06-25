@@ -20,14 +20,14 @@ class MtGoxWebSocketAPI(WebSocketClient):
 
     def received_message(self, message):
         #messages may contain unicode currency symbols
-        message = json.loads(unicode(message))
-        print message
-        if message['channel_name'] == 'ticker.BTCUSD' and self.ticker_handler:
-            self.ticker_handler(message['ticker'])
-        elif message['channel_name'] == 'trade.BTC' and self.trade_handler:
-            self.trade_handler(message['trade'])
-        elif message['channel_name'] == 'depth.BTCUSD' and self.depth_handler:
-            self.depth_handler(message['depth'])
+        data = json.loads(unicode(message))
+        print data
+        if data['channel_name'] == 'ticker.BTCUSD' and self.ticker_handler:
+            self.ticker_handler(data['ticker'], message)
+        elif data['channel_name'] == 'trade.BTC' and self.trade_handler:
+            self.trade_handler(data['trade'], message)
+        elif data['channel_name'] == 'depth.BTCUSD' and self.depth_handler:
+            self.depth_handler(data['depth'], message)
 
         #TODO lag updates
 

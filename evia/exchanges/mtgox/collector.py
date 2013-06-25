@@ -1,6 +1,7 @@
 import time
 from datetime import datetime
 
+from redis import Redis
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -24,7 +25,7 @@ class Collector:
         Session = sessionmaker(bind=engine)
         self.db_session = Session()
 
-    def handle_trade(self, data):
+    def handle_trade(self, data, raw_data):
         trade = db.MtGoxTrade(
             type=data['type'],
             date=datetime.fromtimestamp(data['date']),
@@ -37,8 +38,9 @@ class Collector:
             properties=data['properties'])
         self.db_session.add(trade)
         self.db_session.commit()
+        self.redis_client.publish('trades.mtgox', raw_data)
 
-    def handle_ticker(self, data):
+    def handle_ticker(self, data, raw_data):
         market_state = db.MtGoxTicker(
             timestamp=convert_mtgox_timestamp(data['now']),
             #FIXME needs to be timezone aware
@@ -57,8 +59,9 @@ class Collector:
             sell=data['sell']['value'])
         self.db_session.add(market_state)
         self.db_session.commit()
+        self.redis_client.publish('ticker.mtgox', raw_data)
 
-    def handle_depth(self, data):
+    def handle_depth(self, data, raw_data):
         depth = db.MtGoxDepth(
             type=data['type'],
             type_str=data['type_str'],
@@ -68,9 +71,11 @@ class Collector:
             timestamp=convert_mtgox_timestamp(data['now']))
         self.db_session.add(depth)
         self.db_session.commit()
+        self.redis_client.publish('depth.mtgox', raw_data)
 
     def run(self):
         self.init_db()
+        self.redis_client = Redis()
         self.handler = MtGoxWebSocketAPI(
             'ws://websocket.mtgox.com/mtgox?Currency=USD',
             trade_handler=self.handle_trade,
