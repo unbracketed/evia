@@ -22,11 +22,11 @@ class MtGoxWebSocketAPI(WebSocketClient):
         #messages may contain unicode currency symbols
         data = json.loads(unicode(message))
         print data
-        if data['channel_name'] == 'ticker.BTCUSD' and self.ticker_handler:
+        if data['channel_name'].startswith('ticker') and self.ticker_handler:
             self.ticker_handler(data['ticker'], message)
-        elif data['channel_name'] == 'trade.BTC' and self.trade_handler:
+        elif data['channel_name'].startswith('trade') and self.trade_handler:
             self.trade_handler(data['trade'], message)
-        elif data['channel_name'] == 'depth.BTCUSD' and self.depth_handler:
+        elif data['channel_name'].startswith('depth') and self.depth_handler:
             self.depth_handler(data['depth'], message)
 
         #TODO lag updates
