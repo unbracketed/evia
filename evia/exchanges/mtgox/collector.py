@@ -56,7 +56,8 @@ class Collector:
             last_all=data['last_all']['value'],
             last=data['last']['value'],
             buy=data['buy']['value'],
-            sell=data['sell']['value'])
+            sell=data['sell']['value'],
+            item=data['item'])
         self.db_session.add(market_state)
         self.db_session.commit()
         self.redis_client.publish('ticker.mtgox', raw_data)

@@ -23,6 +23,7 @@ class MtGoxTicker(Base):
     last = Column(Float)
     buy = Column(Float)
     sell = Column(Float)
+    item = Column(String)
 
 
 class MtGoxTrade(Base):
