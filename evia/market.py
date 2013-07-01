@@ -36,17 +36,12 @@ class MarketState:
                         for interval in self.periods]))
                     for fiat_currency in FIAT_CURRENCIES])
 
-        #try to determine OHLC for periods
-        #select last 200 days of data
-
     def start_interval_timer(self):
         self.interval_timer = threading.Timer(60, self.handle_timer)
         self.interval_timer.name = 'Evia-Interval-Timer'
         self.interval_timer.start()
 
     def start(self):
-        # self._stop_requested = False
-
         # Start threads
         self.start_interval_timer()
 
